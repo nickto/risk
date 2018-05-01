@@ -1,8 +1,8 @@
 import numpy as np
 
 
-def attack(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int):
-    """Simulate an attack event.
+def dice_roll(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int):
+    """Simulate a single dice roll.
 
     Args:
         n_attack:  number of units attacking.
@@ -10,7 +10,7 @@ def attack(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int):
         verbose:   verbosity.
 
     Returns:
-        Tuple of the number of attacking and defending units after the battle.
+        Tuple of the number of attacking and defending units after the dice roll.
     """
     if verbose:
         print("Before battle:")
