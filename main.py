@@ -67,8 +67,44 @@ def dice_roll(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int
     return n_attack, n_defence
 
 
+def get_winner(n_attack: int, n_defence: int, verbose: bool = False) -> str:
+    """Simulate a battle till one side wins.
+
+    Args:
+        n_attack:  number of units attacking.
+        n_defence: number of units defending.
+        verbose:   verbosity.
+
+    Returns:
+        Winner in the battle: "attacker" or "defender".
+     """
+
+    roll_counter = 0
+    while True:
+        roll_counter += 1
+        if verbose:
+            print("\nDice roll: {}".format(roll_counter))
+
+        n_attack, n_defence = dice_roll(n_attack, n_defence, verbose=verbose)
+
+        if n_attack == 0 or n_defence == 0:
+            break
+
+    if n_attack == 0:
+        winner = "defender"
+    else:
+        winner = "attacker"
+
+    if verbose:
+        print("\nBattle winner: {}.".format(winner))
+        print("-" * 20 + "\n")
+
+    return winner
+
+
 def main():
-    attack(n_attack=6, n_defence=1, verbose=True)
+    get_winner(n_attack=6, n_defence=6, verbose=True)
+    get_winner(n_attack=6, n_defence=6, verbose=True)
     return
 
 
