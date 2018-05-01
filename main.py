@@ -1,7 +1,17 @@
 import numpy as np
 
-def attack(n_attack, n_defence, verbose=False):
 
+def attack(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int):
+    """Simulate an attack event.
+
+    Args:
+        n_attack:  number of units attacking.
+        n_defence: number of units defending.
+        verbose:   verbosity.
+
+    Returns:
+        Tuple of the number of attacking and defending units after the battle.
+    """
     if verbose:
         print("Before battle:")
         print("Units attacking: {},\tUnits defending {}.".format(n_attack, n_defence))
@@ -35,7 +45,7 @@ def attack(n_attack, n_defence, verbose=False):
             if verbose:
                 print("Defender kills 1 unit.")
 
-        # Remove the dice that playe
+        # Remove one dice from each side that has just played
         dice_attack = dice_attack[1:]
         dice_defence = dice_defence[1:]
 
