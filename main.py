@@ -99,12 +99,39 @@ def attacker_wins(n_attack: int, n_defence: int, verbose: bool = False) -> bool:
         print("\nBattle winner: {}.".format(winner))
         print("-" * 20 + "\n")
 
-    return winner
+    if winner == "attacker":
+        return True
+    else:
+        return False
+
+
+def get_attacker_winning_probability(n_attack: int, n_defence: int, n_iter: int = 1000, verbose: bool = False) -> float:
+    """Compute probability of attacker winning the battle.
+
+    Args:
+        n_attack:  number of units attacking.
+        n_defence: number of units defending.
+        n_iter:    number of iterations in the simulation.
+        verbose:   verbosity.
+
+    Returns:
+        Probability of attacker winning.
+    """
+
+    attacker_victories = []
+    for i in range(n_iter):
+        attacker_victories.append(attacker_wins(n_attack, n_defence, verbose))
+
+    prob = float(np.mean(attacker_victories))
+
+    if verbose:
+        print("Probability of attacker winning: {0:.2f}.".format(prob))
+
+    return prob
 
 
 def main():
-    get_winner(n_attack=6, n_defence=6, verbose=True)
-    get_winner(n_attack=6, n_defence=6, verbose=True)
+    print(get_attacker_winning_probability(n_attack=6, n_defence=6, n_iter=1000, verbose=False))
     return
 
 
