@@ -131,7 +131,8 @@ def get_attacker_winning_probability(n_attack: int, n_defence: int, n_iter: int 
 
 
 def main():
-    print(get_attacker_winning_probability(n_attack=6, n_defence=6, n_iter=1000, verbose=False))
+    print("Probability of attacker winning: {0:.2f}.".
+          format(get_attacker_winning_probability(n_attack=5, n_defence=2, n_iter=1000, verbose=False)))
     return
 
 
