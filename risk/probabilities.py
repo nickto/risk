@@ -1,4 +1,5 @@
 import numpy as np
+import progressbar
 
 
 def dice_roll(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int):
@@ -130,9 +131,49 @@ def get_attacker_winning_probability(n_attack: int, n_defence: int, n_iter: int 
     return prob
 
 
+def get_attacker_winning_matrix(max_units: int = 20, n_iter: int = 1000, verbose: bool = False) -> np.array:
+    """Compute attacker winning probabilities for different number of attacking/defending units.
+
+    Args:
+        max_units:  maximum number of units on both sides.
+        n_iter:     number of iterations in the simulation.
+        verbose:    verbosity.
+
+    Returns:
+        Matrix with probability of attacker winning, attacker units are in rows.
+    """
+
+    probs = np.zeros((max_units, max_units))
+    probs[:] = np.nan
+
+    if verbose:
+        counter = 0
+        bar = progressbar.ProgressBar(max_value=max_units * max_units)
+
+    for attacker_units in range(1, max_units + 1):
+        for defender_units in range(1, max_units + 1):
+            # print(attacker_units, defender_units, get_attacker_winning_probability(
+            #     n_attack=attacker_units,
+            #     n_defence=defender_units,
+            #     n_iter=n_iter,
+            #     verbose=False))
+            probs[attacker_units - 1, defender_units - 1] = get_attacker_winning_probability(
+                n_attack=attacker_units,
+                n_defence=defender_units,
+                n_iter=n_iter,
+                verbose=False)
+
+            if verbose:
+                counter += 1
+                bar.update(counter)
+
+    return probs
+
 def main():
     print("Probability of attacker winning: {0:.2f}.".
-          format(get_attacker_winning_probability(n_attack=5, n_defence=2, n_iter=1000, verbose=False)))
+          format(get_attacker_winning_probability(n_attack=1, n_defence=1, n_iter=1000, verbose=False)))
+    print("\nTable of probabilities:")
+    print(get_attacker_winning_matrix(max_units=5, n_iter=100, verbose=False))
     return
 
 
