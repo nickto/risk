@@ -7,16 +7,16 @@ def roll_dice(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int
     """Simulate a single dice roll.
 
     Args:
-        n_attack:  number of units attacking.
-        n_defence: number of units defending.
+        n_attack:  number of armies attacking.
+        n_defence: number of armies defending.
         verbose:   verbosity.
 
     Returns:
-        Tuple of the number of attacking and defending units after the dice roll.
+        Tuple of the number of attacking and defending armies after the dice roll.
     """
     if verbose:
         print("Before battle:")
-        print("Units attacking: {},\tUnits defending {}.".format(n_attack, n_defence))
+        print("Armies attacking: {},\tArmies defending {}.".format(n_attack, n_defence))
 
     # Throw dice
     dice_attack = np.random.randint(low=1, high=6, size=np.min([3, n_attack]))
@@ -34,18 +34,18 @@ def roll_dice(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int
             if verbose:
                 print("Ran out of dice.")
                 print("After battle:")
-                print("Units attacking: {},\tUnits defending {}.".format(n_attack, n_defence))
+                print("Armies attacking: {},\tArmies defending {}.".format(n_attack, n_defence))
             return n_attack, n_defence
 
         # Fight
         if dice_attack[0] > dice_defence[0]:
             if verbose:
-                print("Attacker kills 1 unit.")
+                print("Attacker kills 1 army")
             n_defence -= 1
         else:
             n_attack -= 1
             if verbose:
-                print("Defender kills 1 unit.")
+                print("Defender kills 1 army")
 
         # Remove one dice from each side that has just played
         dice_attack = dice_attack[1:]
@@ -59,12 +59,12 @@ def roll_dice(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int
                 else:
                     print("Defender is dead.")
                 print("After battle:")
-                print("Units attacking: {},\tUnits defending {}.".format(n_attack, n_defence))
+                print("Armies attacking: {},\tArmies defending {}.".format(n_attack, n_defence))
             return n_attack, n_defence
 
     if verbose:
         print("After battle:")
-        print("Units attacking: {},\tUnits defending {}.".format(n_attack, n_defence))
+        print("Armies attacking: {},\tArmies defending {}.".format(n_attack, n_defence))
 
     return n_attack, n_defence
 
@@ -73,8 +73,8 @@ def attacker_wins(n_attack: int, n_defence: int, verbose: bool = False) -> bool:
     """Simulate a battle till one side wins.
 
     Args:
-        n_attack:  number of units attacking.
-        n_defence: number of units defending.
+        n_attack:  number of armies attacking.
+        n_defence: number of armies defending.
         verbose:   verbosity.
 
     Returns:
@@ -111,8 +111,8 @@ def get_attacker_winning_probability(n_attack: int, n_defence: int, n_iter: int 
     """Compute probability of attacker winning the battle.
 
     Args:
-        n_attack:  number of units attacking.
-        n_defence: number of units defending.
+        n_attack:  number of armies attacking.
+        n_defence: number of armies defending.
         n_iter:    number of iterations in the simulation.
         verbose:   verbosity.
 
@@ -132,35 +132,35 @@ def get_attacker_winning_probability(n_attack: int, n_defence: int, n_iter: int 
     return prob
 
 
-def get_attacker_winning_matrix(max_units: int = 20, n_iter: int = 1000, verbose: bool = False) -> np.array:
-    """Compute attacker winning probabilities for different number of attacking/defending units.
+def get_attacker_winning_matrix(max_armies: int = 20, n_iter: int = 1000, verbose: bool = False) -> np.array:
+    """Compute attacker winning probabilities for different number of attacking/defending armies.
 
     Args:
-        max_units:  maximum number of units on both sides.
+        max_armies:  maximum number of armies on both sides.
         n_iter:     number of iterations in the simulation.
         verbose:    verbosity.
 
     Returns:
-        Matrix with probability of attacker winning, attacker units are in rows.
+        Matrix with probability of attacker winning, attacker armies are in rows.
     """
 
-    probs = np.zeros((max_units, max_units))
+    probs = np.zeros((max_armies, max_armies))
     probs[:] = np.nan
 
     if verbose:
         counter = 0
-        bar = progressbar.ProgressBar(max_value=max_units * max_units)
+        bar = progressbar.ProgressBar(max_value=max_armies * max_armies)
 
-    for attacker_units in range(1, max_units + 1):
-        for defender_units in range(1, max_units + 1):
-            # print(attacker_units, defender_units, get_attacker_winning_probability(
-            #     n_attack=attacker_units,
-            #     n_defence=defender_units,
+    for attacker_armies in range(1, max_armies + 1):
+        for defender_armies in range(1, max_armies + 1):
+            # print(attacker_armies, defender_armies, get_attacker_winning_probability(
+            #     n_attack=attacker_armies,
+            #     n_defence=defender_armies,
             #     n_iter=n_iter,
             #     verbose=False))
-            probs[attacker_units - 1, defender_units - 1] = get_attacker_winning_probability(
-                n_attack=attacker_units,
-                n_defence=defender_units,
+            probs[attacker_armies - 1, defender_armies - 1] = get_attacker_winning_probability(
+                n_attack=attacker_armies,
+                n_defence=defender_armies,
                 n_iter=n_iter,
                 verbose=False)
 
@@ -174,7 +174,7 @@ def main():
     print("Probability of attacker winning: {0:.2f}.".
           format(get_attacker_winning_probability(n_attack=1, n_defence=1, n_iter=1000, verbose=False)))
     print("\nTable of probabilities:")
-    print(get_attacker_winning_matrix(max_units=5, n_iter=100, verbose=False))
+    print(get_attacker_winning_matrix(max_armies=5, n_iter=100, verbose=False))
     return
 
 

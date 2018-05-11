@@ -8,9 +8,9 @@ def main():
     parser.add_argument("-m", "--max",
                         type=int,
                         metavar="N",
-                        dest="max_units",
+                        dest="max_armies",
                         default=20,
-                        help="Max number of units on each side.")
+                        help="Max number of armies on each side.")
     parser.add_argument("-o", "--out",
                         type=str,
                         metavar="FILE",
@@ -24,12 +24,12 @@ def main():
                         help="Number of iterations in the sumulation.")
     args = parser.parse_args()
 
-    probs = get_attacker_winning_matrix(max_units=args.max_units, n_iter=args.iter, verbose=True)
+    probs = get_attacker_winning_matrix(max_armies=args.max_armies, n_iter=args.iter, verbose=True)
     probs = pd.DataFrame(probs)
-    probs.columns = range(1, args.max_units + 1)
+    probs.columns = range(1, args.max_armies + 1)
     probs.index = probs.index + 1
 
-    print("\nNumber of attacking units are in rows, defending - in columns.")
+    print("\nNumber of attacking armies are in rows, defending - in columns.")
     print(probs.round(3))
 
     if args.fileout is not None:
