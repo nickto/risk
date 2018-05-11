@@ -3,7 +3,7 @@ import numpy as np
 import progressbar
 
 
-def dice_roll(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int):
+def roll_dice(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int):
     """Simulate a single dice roll.
 
     Args:
@@ -87,7 +87,7 @@ def attacker_wins(n_attack: int, n_defence: int, verbose: bool = False) -> bool:
         if verbose:
             print("\nDice roll: {}".format(roll_counter))
 
-        n_attack, n_defence = dice_roll(n_attack, n_defence, verbose=verbose)
+        n_attack, n_defence = roll_dice(n_attack, n_defence, verbose=verbose)
 
         if n_attack == 0 or n_defence == 0:
             break
