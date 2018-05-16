@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-import progressbar
+import pandas as pd
 
 
 def roll_dice(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int):
@@ -69,7 +69,7 @@ def roll_dice(n_attack: int, n_defence: int, verbose: bool = False) -> (int, int
     return n_attack, n_defence
 
 
-def attacker_wins(n_attack: int, n_defence: int, verbose: bool = False) -> bool:
+def battle(n_attack: int, n_defence: int, verbose: bool = False) -> dict:
     """Simulate a battle till one side wins.
 
     Args:
@@ -78,8 +78,8 @@ def attacker_wins(n_attack: int, n_defence: int, verbose: bool = False) -> bool:
         verbose:   verbosity.
 
     Returns:
-        True if attacker wins.
-     """
+        The winning side and the number of remaining armies.
+    """
 
     roll_counter = 0
     while True:
@@ -98,83 +98,80 @@ def attacker_wins(n_attack: int, n_defence: int, verbose: bool = False) -> bool:
         winner = "attacker"
 
     if verbose:
-        print("\nBattle winner: {}.".format(winner))
+        print("\nBattle winner: {}. N attack: {}, N defence: {}".format(winner, n_attack, n_defence))
         print("-" * 20 + "\n")
 
+    outcome = {"armies": {
+        "attack": n_attack,
+        "defence": n_defence}
+    }
     if winner == "attacker":
-        return True
+        outcome["winner"] = {"attack": True, "defence": False}
     else:
-        return False
+        outcome["winner"] = {"attack": False, "defence": True}
+
+    return outcome
 
 
-def get_attacker_winning_probability(n_attack: int, n_defence: int, n_iter: int = 1000, verbose: bool = False) -> float:
-    """Compute probability of attacker winning the battle.
+def simulation(n_attack: int, n_defence: int, n_iter: int = 1000, verbose: bool = False) -> pd.DataFrame:
+    """Simulate a battle multiple times.
 
     Args:
         n_attack:  number of armies attacking.
         n_defence: number of armies defending.
-        n_iter:    number of iterations in the simulation.
+        n_iter:    number of times to repeat simulation.
         verbose:   verbosity.
 
     Returns:
-        Probability of attacker winning.
+        Data frame with results of each battle.
     """
-
-    attacker_victories = []
+    battle_list = []
     for i in range(n_iter):
-        attacker_victories.append(attacker_wins(n_attack, n_defence, verbose))
+        battle_outcome = battle(n_attack=5, n_defence=5, verbose=False)
+        battle_list.append({
+            "n_attack": battle_outcome["armies"]["attack"],
+            "n_defence": battle_outcome["armies"]["defence"],
+            "attack_wins": battle_outcome["winner"]["attack"],
+            "defence_wins": battle_outcome["winner"]["defence"]
+        })
+    outcomes = pd.DataFrame(battle_list)
+    return outcomes
 
-    prob = float(np.mean(attacker_victories))
 
-    if verbose:
-        print("Probability of attacker winning: {0:.2f}.".format(prob))
-
-    return prob
-
-
-def get_attacker_winning_matrix(max_armies: int = 20, n_iter: int = 1000, verbose: bool = False) -> np.array:
-    """Compute attacker winning probabilities for different number of attacking/defending armies.
+def summarise_simulation(simulation_outcome: pd.DataFrame) -> dict:
+    """Process simulation.
 
     Args:
-        max_armies:  maximum number of armies on both sides.
-        n_iter:     number of iterations in the simulation.
-        verbose:    verbosity.
+        simulation_outcome:  result of simulation function.
 
     Returns:
-        Matrix with probability of attacker winning, attacker armies are in rows.
+        Dict with summary of a simulation: expected wins and expected number of armies.
     """
+    return pd.Series(np.mean(simulation_outcome, axis=0)).to_dict()
 
-    probs = np.zeros((max_armies, max_armies))
-    probs[:] = np.nan
 
-    if verbose:
-        counter = 0
-        bar = progressbar.ProgressBar(max_value=max_armies * max_armies)
+def simulation_summary(n_attack: int, n_defence: int, n_iter: int = 1000, verbose: bool = False) -> dict:
+    """Simulate a battle multiple times and summarise the results.
 
-    for attacker_armies in range(1, max_armies + 1):
-        for defender_armies in range(1, max_armies + 1):
-            # print(attacker_armies, defender_armies, get_attacker_winning_probability(
-            #     n_attack=attacker_armies,
-            #     n_defence=defender_armies,
-            #     n_iter=n_iter,
-            #     verbose=False))
-            probs[attacker_armies - 1, defender_armies - 1] = get_attacker_winning_probability(
-                n_attack=attacker_armies,
-                n_defence=defender_armies,
-                n_iter=n_iter,
-                verbose=False)
+    Args:
+        n_attack:  number of armies attacking.
+        n_defence: number of armies defending.
+        n_iter:    number of times to repeat simulation.
+        verbose:   verbosity.
 
-            if verbose:
-                counter += 1
-                bar.update(counter)
+    Returns:
+        Dict with summary of a simulation: expected wins and expected number of armies.
+    """
+    outcome = simulation(n_attack, n_defence, n_iter, verbose)
 
-    return probs
+    return summarise_simulation(outcome)
+
 
 def main():
-    print("Probability of attacker winning: {0:.2f}.".
-          format(get_attacker_winning_probability(n_attack=1, n_defence=1, n_iter=1000, verbose=False)))
-    print("\nTable of probabilities:")
-    print(get_attacker_winning_matrix(max_armies=5, n_iter=100, verbose=False))
+    print(roll_dice(n_attack=5, n_defence=5, verbose=True))
+    print(battle(n_attack=5, n_defence=5, verbose=True))
+    print(simulation_summary(n_attack=5, n_defence=5))
+
     return
 
 
