@@ -3,5 +3,4 @@ Python package and a set of scripts for computing probabilities of winning in th
 for example [here](http://www.ultraboardgames.com/risk/game-rules.php).
 
 ## TO-DO
-- Expected number of armies after battle.
 - Extend to paths, not just battles.
