@@ -127,7 +127,7 @@ def simulation(n_attack: int, n_defence: int, n_iter: int = 1000, verbose: bool 
     """
     battle_list = []
     for i in range(n_iter):
-        battle_outcome = battle(n_attack=5, n_defence=5, verbose=False)
+        battle_outcome = battle(n_attack=n_attack, n_defence=n_defence, verbose=False)
         battle_list.append({
             "n_attack": battle_outcome["armies"]["attack"],
             "n_defence": battle_outcome["armies"]["defence"],
@@ -200,8 +200,9 @@ def get_summary_matrices(n_max: int = 10, n_iter: int = 1000) -> dict:
 def main():
     print(roll_dice(n_attack=5, n_defence=5, verbose=True))
     print(battle(n_attack=5, n_defence=5, verbose=True))
+    print(simulation(n_attack=10, n_defence=1, n_iter=100))
     print(simulation_summary(n_attack=5, n_defence=5))
-    print(get_summary_matrices(n_max=5, n_iter=100))
+    print(get_summary_matrices(n_max=5, n_iter=1000))
     return
 
 
