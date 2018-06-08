@@ -3,4 +3,5 @@ Python package and a set of scripts for computing probabilities of winning in th
 for example [here](http://www.ultraboardgames.com/risk/game-rules.php).
 
 ## TO-DO
-- Extend to paths, not just battles.
+- ~Extend to paths, not just battles.~
+- Create CLI.
