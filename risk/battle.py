@@ -127,7 +127,7 @@ def simulation(n_attack: int, n_defence: int, n_iter: int = 1000, verbose: bool 
     """
     battle_list = []
     for i in range(n_iter):
-        battle_outcome = battle(n_attack=n_attack, n_defence=n_defence, verbose=False)
+        battle_outcome = battle(n_attack=n_attack, n_defence=n_defence, verbose=verbose)
         battle_list.append({
             "n_attack": battle_outcome["armies"]["attack"],
             "n_defence": battle_outcome["armies"]["defence"],
