@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 import pandas as pd
 
-from risk.probabilities import get_summary_matrices
+from risk.battle import get_summary_matrices
 
 
 def reindex_from_one(array: np.array) -> pd.DataFrame:
