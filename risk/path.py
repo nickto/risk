@@ -51,8 +51,59 @@ def path(n_attack: int, n_defence_list: list, verbose: bool = False) -> dict:
 
     return path_outcome
 
+
+def simulation(n_attack: int, n_defence_list: list, n_iter: int = 1000, verbose: bool = False) -> pd.DataFrame:
+    """Simulate a path multiple times.
+
+    Args:
+        n_attack:       number of armies attacking.
+        n_defence_list: list of number of armies defending.
+        n_iter:         number of times to repeat simulation.
+        verbose:        verbosity.
+
+    Returns:
+        Data frame with results of each path.
+    """
+    path_list = []
+    for i in range(n_iter):
+        path_outcome = path(n_attack=n_attack, n_defence_list=n_defence_list.copy(), verbose=False)
+
+        if verbose:
+            print(path_outcome)
+
+        entry = {
+            "n_attack": path_outcome["armies"]["attack"],
+            "attack_wins": path_outcome["winner"]["attack"],
+            "defence_wins": path_outcome["winner"]["defence"]
+        }
+
+        for step, n_defence in enumerate(path_outcome["armies"]["defence"]):
+            key = "step_{:d}".format(step + 1)
+            entry[key] = n_defence
+
+        path_list.append(entry)
+
+    outcomes = pd.DataFrame(path_list)
+    return outcomes
+
+
+def summarise_simulation(simulation_outcome: pd.DataFrame) -> dict:
+    """Process simulation.
+
+    Args:
+        simulation_outcome:  result of simulation function.
+
+    Returns:
+        Dict with summary of a simulation: expected wins and expected number of armies.
+    """
+    summary = dict(pd.Series(np.mean(simulation_outcome, axis=0)).to_dict())
+    return summary
+
+
 def main():
-    path(10, [5, 4], True)
+    # print(path(10, [10, 1], False))
+    simulation_outcome = simulation(10, [10, 1], 100, False)
+    print(summarise_simulation(simulation_outcome))
     return
 
 
