@@ -100,10 +100,27 @@ def summarise_simulation(simulation_outcome: pd.DataFrame) -> dict:
     return summary
 
 
+def simulation_summary(n_attack: int, n_defence_list: list, n_iter: int = 1000, verbose: bool = False) -> dict:
+    """Simulate a path multiple times and summarise the results.
+
+    Args:
+        n_attack:       number of armies attacking.
+        n_defence_list: list of number of armies defending.
+        n_iter:         number of times to repeat simulation.
+        verbose:        verbosity.
+    Returns:
+        Dict with summary of a simulation: expected wins and expected number of armies.
+    """
+    outcome = simulation(n_attack, n_defence_list, n_iter, verbose)
+
+    return summarise_simulation(outcome)
+
+
 def main():
-    # print(path(10, [10, 1], False))
+    print(path(10, [10, 1], False))
     simulation_outcome = simulation(10, [10, 1], 100, False)
     print(summarise_simulation(simulation_outcome))
+    print(simulation_summary(10, [10, 1], 1000, False))
     return
 
 
