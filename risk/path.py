@@ -24,12 +24,9 @@ def path(n_attack: int, n_defence_list: list, verbose: bool = False) -> dict:
             print(n_attack, n_defence_list)
         outcome = battle(n_attack, n_defence, verbose=False)
         outcomes.append(outcome)
-        print(outcome)
 
         n_attack = outcome["armies"]["attack"]
         n_defence_list[i] = outcome["armies"]["defence"]
-
-        print(n_attack, n_defence_list)
 
         if outcome["winner"]["defence"]:
             success = False
@@ -42,13 +39,15 @@ def path(n_attack: int, n_defence_list: list, verbose: bool = False) -> dict:
         else:
             print("Attack failed.")
 
-    path_outcome = {
-        "armies": {
-            "attack": n_attack,
-            "defence": n_defence_list
-        },
-        "attack_success": success
+    path_outcome = {"armies": {
+        "attack": n_attack,
+        "defence": n_defence_list}
     }
+
+    if success:
+        path_outcome["winner"] = {"attack": True, "defence": False}
+    else:
+        path_outcome["winner"] = {"attack": False, "defence": True}
 
     return path_outcome
 
