@@ -74,7 +74,7 @@ def summarise_simulation(simulation_outcomes: list) -> dict:
             summary[i, 3] += step["winner"]["defence"]
     summary = summary / len(simulation_outcomes)
     summary = pd.DataFrame(summary)
-    summary.columns = ["n_attack", "n_defence", "p_attack_win", "p_defence_win"]
+    summary.columns = ["n_attack", "n_defence", "attack_wins", "defence_wins"]
     summary.index += 1
 
     return summary
@@ -97,9 +97,9 @@ def simulation_summary(n_attack: int, n_defence_list: list, n_iter: int = 1000, 
 
 
 def main():
-    print(path(10, [5, 5, 5], False))
-    simulation_outcomes = simulation(10, [10, 1], 100, False)
-    print(summarise_simulation(simulation_outcomes))
+    # print(path(10, [5, 5, 5], False))
+    # simulation_outcomes = simulation(10, [10, 1], 100, False)
+    # print(summarise_simulation(simulation_outcomes))
     print(simulation_summary(10, [2, 2, 2, 2, 2], 1000, False))
     return
 

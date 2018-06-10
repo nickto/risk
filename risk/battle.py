@@ -198,11 +198,11 @@ def get_summary_matrices(n_max: int = 10, n_iter: int = 1000) -> dict:
 
 
 def main():
-    print(roll_dice(n_attack=5, n_defence=5, verbose=True))
-    print(battle(n_attack=5, n_defence=5, verbose=True))
-    print(simulation(n_attack=10, n_defence=1, n_iter=100))
+    # print(roll_dice(n_attack=5, n_defence=5, verbose=True))
+    # print(battle(n_attack=5, n_defence=5, verbose=True))
+    # print(simulation(n_attack=10, n_defence=1, n_iter=100))
     print(simulation_summary(n_attack=5, n_defence=5))
-    print(get_summary_matrices(n_max=5, n_iter=1000))
+    # print(get_summary_matrices(n_max=5, n_iter=1000))
     return
 
 
