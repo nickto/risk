@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import numpy as np
 import pandas as pd
-from battle import battle
+from .battle import battle
 
 
 def path(n_attack: int, n_defence_list: list, verbose: bool = False) -> dict:
