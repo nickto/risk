@@ -4,4 +4,4 @@ for example [here](http://www.ultraboardgames.com/risk/game-rules.php).
 
 ## TO-DO
 - ~Extend to paths, not just battles.~
-- Create CLI.
+- ~Create CLI.~
