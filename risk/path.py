@@ -13,43 +13,23 @@ def path(n_attack: int, n_defence_list: list, verbose: bool = False) -> dict:
         verbose:        verbosity.
 
     Returns:
-        The winning side and the number of remaining armies.
+        The list of outcomes of each individual battle.
     """
 
     # Simulate a path
     outcomes = []
-    success = True  # True if attacker wins
     for i, n_defence in enumerate(n_defence_list):
         if verbose:
             print(n_attack, n_defence_list)
         outcome = battle(n_attack, n_defence, verbose=False)
+        outcome["step"] = i + 1
         outcomes.append(outcome)
 
-        n_attack = outcome["armies"]["attack"]
-        n_defence_list[i] = outcome["armies"]["defence"]
+        n_attack = outcome["armies"]["attack"] - 1
+        if n_attack < 0:
+            n_attack = 0
 
-        if outcome["winner"]["defence"]:
-            success = False
-            break
-
-    if verbose:
-        print(n_attack, n_defence_list)
-        if success:
-            print("Attack succeeded.")
-        else:
-            print("Attack failed.")
-
-    path_outcome = {"armies": {
-        "attack": n_attack,
-        "defence": n_defence_list}
-    }
-
-    if success:
-        path_outcome["winner"] = {"attack": True, "defence": False}
-    else:
-        path_outcome["winner"] = {"attack": False, "defence": True}
-
-    return path_outcome
+    return outcomes
 
 
 def simulation(n_attack: int, n_defence_list: list, n_iter: int = 1000, verbose: bool = False) -> pd.DataFrame:
@@ -62,41 +42,41 @@ def simulation(n_attack: int, n_defence_list: list, n_iter: int = 1000, verbose:
         verbose:        verbosity.
 
     Returns:
-        Data frame with results of each path.
+        List of each path results.
     """
-    path_list = []
+    outcomes = []
     for i in range(n_iter):
-        path_outcome = path(n_attack=n_attack, n_defence_list=n_defence_list.copy(), verbose=False)
+        outcome = path(n_attack=n_attack, n_defence_list=n_defence_list.copy(), verbose=False)
+        outcomes.append(outcome)
 
         if verbose:
-            print(path_outcome)
+            print(outcome)
 
-        entry = {
-            "n_attack": path_outcome["armies"]["attack"],
-            "attack_wins": path_outcome["winner"]["attack"],
-            "defence_wins": path_outcome["winner"]["defence"]
-        }
-
-        for step, n_defence in enumerate(path_outcome["armies"]["defence"]):
-            key = "step_{:d}".format(step + 1)
-            entry[key] = n_defence
-
-        path_list.append(entry)
-
-    outcomes = pd.DataFrame(path_list)
     return outcomes
 
 
-def summarise_simulation(simulation_outcome: pd.DataFrame) -> dict:
+def summarise_simulation(simulation_outcomes: list) -> dict:
     """Process simulation.
 
     Args:
-        simulation_outcome:  result of simulation function.
+        simulation_outcomes:  result of simulation function.
 
     Returns:
         Dict with summary of a simulation: expected wins and expected number of armies.
     """
-    summary = dict(pd.Series(np.mean(simulation_outcome, axis=0)).to_dict())
+    summary = np.zeros(shape=(len(simulation_outcomes[0]), 4))
+    for outcome in simulation_outcomes:
+        for i, step in enumerate(outcome):
+            assert i + 1 == step["step"]
+            summary[i, 0] += step["armies"]["attack"]
+            summary[i, 1] += step["armies"]["defence"]
+            summary[i, 2] += step["winner"]["attack"]
+            summary[i, 3] += step["winner"]["defence"]
+    summary = summary / len(simulation_outcomes)
+    summary = pd.DataFrame(summary)
+    summary.columns = ["n_attack", "n_defence", "p_attack_win", "p_defence_win"]
+    summary.index += 1
+
     return summary
 
 
@@ -117,10 +97,10 @@ def simulation_summary(n_attack: int, n_defence_list: list, n_iter: int = 1000, 
 
 
 def main():
-    print(path(10, [10, 1], False))
-    simulation_outcome = simulation(10, [10, 1], 100, False)
-    print(summarise_simulation(simulation_outcome))
-    print(simulation_summary(10, [10, 1], 1000, False))
+    print(path(10, [5, 5, 5], False))
+    simulation_outcomes = simulation(10, [10, 1], 100, False)
+    print(summarise_simulation(simulation_outcomes))
+    print(simulation_summary(10, [2, 2, 2, 2, 2], 1000, False))
     return
 
 
